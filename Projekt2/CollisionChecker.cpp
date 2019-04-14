@@ -2,16 +2,16 @@
 #include "Ball.h"
 #include "Pallet.h"
 
-bool CollisionChecker::checkBallWithPalletCollision(Ball* ball, Pallet* pallet) {
-	float ballX = ball->getSprite().getPosition().x;
-	float ballY = ball->getSprite().getPosition().y;
-	float ballRightSide = ball->getSprite().getRightSide();
-	float ballBottom = ball->getSprite().getBottom();
+bool CollisionChecker::isBallInCollisionWithPallet(Ball* ball, Pallet* pallet) {
+	float ballX = ball->getX();
+	float ballY = ball->getY();
+	float ballRightSide = ball->getRightSide();
+	float ballBottom = ball->getBottom();
 
-	float palletX = pallet->getSprite().getPosition().x;
-	float palletY = pallet->getSprite().getPosition().y;
-	float palletRightSide = pallet->getSprite().getRightSide();
-	float palletBottom = pallet->getSprite().getBottom();
+	float palletX = pallet->getX();
+	float palletY = pallet->getY();
+	float palletRightSide = pallet->getRightSide();
+	float palletBottom = pallet->getBottom();
 
 	float predictedLeftSideOfBall = ballX + ball->getVectorOfMovement().x;
 	float predictedRightSideOfBall = ballRightSide + ball->getVectorOfMovement().x;
@@ -19,46 +19,39 @@ bool CollisionChecker::checkBallWithPalletCollision(Ball* ball, Pallet* pallet) 
 	float predictedBottomOfBall = ballBottom + ball->getVectorOfMovement().y;
 
 	if (predictedRightSideOfBall > palletX && predictedLeftSideOfBall < palletRightSide &&
-		predictedBottomOfBall > palletY && predictedTopOfBall < palletBottom) {
-
-		if (ball->getVectorOfMovement().x < 0.f)
-			ball->getSprite().setX(palletRightSide);
-		else
-			ball->getSprite().setX(palletX - ball->getSprite().getSize().width);
-
-		ball->bounceHorizontally();
-		ball->increaseSpeed(30.F);
-
+		predictedBottomOfBall > palletY && predictedTopOfBall < palletBottom)
 		return true;
-	}
+	else
+		return false;
 }
 
-void CollisionChecker::checkBallWithUpperBoundCollision(Ball* ball) {
-	float predictedYPosition = ball->getSprite().getPosition().y + ball->getVectorOfMovement().y;
+bool CollisionChecker::isBallInCollisionWithUpperBound(Ball* ball) {
+	float ballY = ball->getY();
+	float ballVector = ball->getVectorOfMovement().y;
+	float predictedYPosition = ballY + ballVector;
 
-	if (predictedYPosition <= 0)
-		ball->bounceVertically();
+	return predictedYPosition <= 0;
 }
 
-void CollisionChecker::checkBallWithLowerBoundCollision(Ball* ball) {
-	float ballY = ball->getSprite().getPosition().y;
-	float ballHeigth = ball->getSprite().getSize().heigth;
-	float predictedYPosition = ballY + ballHeigth + ball->getVectorOfMovement().y;
+bool CollisionChecker::isBallInCollisionWithLowerBound(Ball* ball) {
+	float ballY = ball->getY();
+	float ballHeigth = ball->getHeight();
+	float ballVector = ball->getVectorOfMovement().y;
+	float predictedYPosition = ballY + ballHeigth + ballVector;
 
-	if (predictedYPosition >= 768.F)
-		ball->bounceVertically();
+	return predictedYPosition >= 768.F;
 }
 
 bool CollisionChecker::isBallOutsideLeft(Ball* ball) {
-	float ballX = ball->getSprite().getPosition().x;
-	float ballWidth = ball->getSprite().getSize().width;
+	float ballX = ball->getX();
+	float ballWidth = ball->getWidth();
 
 	return ballX < (-ballWidth);
 }
 
 bool CollisionChecker::isBallOutsideRight(Ball* ball) {
-	float ballX = ball->getSprite().getPosition().x;
-	float ballWidth = ball->getSprite().getSize().width;
+	float ballX = ball->getX();
+	float ballWidth = ball->getWidth();
 
 	return ballX > 1024.F + ballWidth;
 }

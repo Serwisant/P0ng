@@ -9,18 +9,42 @@
 #include <SFML/System.hpp>
 
 Engine::Engine(sf::RenderWindow* window) : appWindow(window) {
-	ball = new Ball(window);
-	leftPallet = new Pallet(0.f, window);
-	rightPallet = new Pallet(1004.f, window);
-	leftScore = new Numbers(Point{ 50.f, 50.f }, window);
-	rightScore = new Numbers(Point{ 924.f, 50.f }, window);
+	initializeBall();
+	initializePallets();
+	initializeScore();
+	initializeCollisionChecker();
+	initializeSoundPlayer();
+	initializeAnalogSettings();
+}
 
-	collisionChecker = new CollisionChecker();
+void Engine::initializeBall(){
+	ball = new Ball(appWindow);
+}
 
-	soundPlayer = new SoundPlayer();
+void Engine::initializePallets() {
+	leftPallet = new Pallet(0.F, appWindow);
+	rightPallet = new Pallet(1004.F, appWindow);
+}
 
+void Engine::initializeScore() {
 	leftScoreNum = 0;
 	rightScoreNum = 0;
+
+	leftScore = new Numbers(Point{ 50.F, 50.F }, appWindow);
+	rightScore = new Numbers(Point{ 924.F, 50.F }, appWindow);
+}
+
+void Engine::initializeCollisionChecker() {
+	collisionChecker = new CollisionChecker();
+}
+
+void Engine::initializeSoundPlayer() {
+	soundPlayer = new SoundPlayer();
+}
+
+void Engine::initializeAnalogSettings() {
+	analogSensivity = 15.F;
+	deadzone = 300.F;
 }
 
 Engine::~Engine() {
@@ -38,7 +62,8 @@ Engine::~Engine() {
 }
 
 void Engine::updateLoop(float dt) {
-	movePallets();
+	moveLeftPallet();
+	moveRightPallet();
 	checkBallCollision();
 
 	leftPallet->update(dt);
@@ -56,48 +81,97 @@ void Engine::draw() {
 
 
 void Engine::movePallets() {
-	float analogSensivity = 15.F;
-	float deadzone = 300.F;
+	moveLeftPallet();
+	moveRightPallet();
+}
 
+void Engine::moveLeftPallet() {
 	float leftAnalogY = sf::Joystick::getAxisPosition(0, sf::Joystick::Y) * analogSensivity;
-	float rightAnalogY = sf::Joystick::getAxisPosition(0, sf::Joystick::R) * analogSensivity;
 
 	if (abs(leftAnalogY) > deadzone)
-		leftPallet->move(leftAnalogY);
+		leftPallet->movePallet(leftAnalogY);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		leftPallet->move(-1500.F);
+		leftPallet->movePallet(-1500.F);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-		leftPallet->move(1500.F);
+		leftPallet->movePallet(1500.F);
+}
+
+void Engine::moveRightPallet() {
+	float rightAnalogY = sf::Joystick::getAxisPosition(0, sf::Joystick::R) * analogSensivity;
 
 	if (abs(rightAnalogY) > deadzone)
-		rightPallet->move(rightAnalogY);
+		rightPallet->movePallet(rightAnalogY);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Quote))
-		rightPallet->move(-1500.F);
+		rightPallet->movePallet(-1500.F);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Slash))
-		rightPallet->move(1500.F);
+		rightPallet->movePallet(1500.F);
 }
 
 void Engine::checkBallCollision() {
-	collisionChecker->checkBallWithUpperBoundCollision(ball);
-	collisionChecker->checkBallWithLowerBoundCollision(ball);
+	checkBallCollisionWithUpperAndLowerBoundary();
 
+	checkBallOutsideLeftSide();
+	checkBallOutsideRightSide();
+	
+	checkBallWithLeftPalletCollision();
+	checkBallWithRightPalletCollision();
+}
+
+void Engine::checkBallCollisionWithUpperAndLowerBoundary() {
+	if (collisionChecker->isBallInCollisionWithUpperBound(ball) ||
+		collisionChecker->isBallInCollisionWithLowerBound(ball))
+		ball->bounceVertically();
+}
+
+void Engine::checkBallOutsideLeftSide() {
 	if (collisionChecker->isBallOutsideLeft(ball)) {
 		rightScoreNum++;
-		soundPlayer->playCrash();
-		ball->reset();
+		resetBall();
 	}
+}
 
+void Engine::checkBallOutsideRightSide() {
 	if (collisionChecker->isBallOutsideRight(ball)) {
 		leftScoreNum++;
-		soundPlayer->playCrash();
-		ball->reset();
+		resetBall();
 	}
+}
 
-	if (collisionChecker->checkBallWithPalletCollision(ball, leftPallet))
+void Engine::resetBall() {
+	soundPlayer->playCrash();
+	ball->reset();
+}
+
+void Engine::checkBallWithLeftPalletCollision() {
+	if (collisionChecker->isBallInCollisionWithPallet(ball, leftPallet)
+		&& ball->getVectorOfMovement().x < 0) {
+		float leftPalletRightSide = leftPallet->getRightSide();
+
+		ball->setX(leftPalletRightSide);
+
+		bounceFromPallet();
+
 		soundPlayer->playLowerSound();
+	}
+}
 
-	if (collisionChecker->checkBallWithPalletCollision(ball, rightPallet))
+void Engine::checkBallWithRightPalletCollision(){
+	if (collisionChecker->isBallInCollisionWithPallet(ball, rightPallet)
+		&& ball->getVectorOfMovement().x > 0) {
+		float rightPalletLeftSide = rightPallet->getX();
+		float ballWidth = ball->getWidth();
+
+		ball->setX(rightPalletLeftSide - ballWidth);
+
+		bounceFromPallet();
+
 		soundPlayer->playHigherSound();
+	}
+}
+
+void Engine::bounceFromPallet() {
+	ball->bounceHorizontally();
+	ball->increaseSpeed(30.F);
 }

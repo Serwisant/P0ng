@@ -16,8 +16,11 @@ public:
 	void setSize(Size size);
 	void move(float dx, float dy);
 
-	Point getPosition();
-	Size getSize();
+	float getX();
+	float getY();
+
+	float getWidth();
+	float getHeight();
 
 	float getRightSide();
 	float getBottom();

@@ -1,8 +1,9 @@
 ﻿  Ball.cpp
-Ball.cpp(51): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+Ball.cpp(46): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+  CollisionChecker.cpp
   Trwa generowanie kodu
-  4 of 110 functions ( 3.6%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
+  1 of 124 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
     2 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   Projekt2.vcxproj -> C:\Users\Torll\documents\visual studio 2017\Projects\Projekt2\Release\Projekt2.exe

@@ -1,12 +1,12 @@
 #include "Ball.h"
 
 Ball::Ball(sf::RenderWindow* window) : appWindow(window) {
-	Size sizeOfBall{ 20.f, 20.f };
-	sprite.setSize(sizeOfBall);
+	Size sizeOfBall{ 20.F, 20.F };
+	setSize(sizeOfBall);
 
 	reset();
 
-	ballSprite.setSize(sf::Vector2f(sprite.getSize().width, sprite.getSize().heigth));
+	ballSprite.setSize(sf::Vector2f(getWidth(), getHeight()));
 	ballSprite.setFillColor(sf::Color::White);
 }
 
@@ -17,14 +17,11 @@ void Ball::update(float dt) {
 }
 
 void Ball::move(float dx, float dy) {
-	sprite.move(dx, dy);
+	Sprite::move(dx, dy);
 }
 
 void Ball::draw() {
-	float ballX = sprite.getPosition().x;
-	float ballY = sprite.getPosition().y;
-
-	ballSprite.setPosition(ballX, ballY);
+	ballSprite.setPosition(getX(), getY());
 	appWindow->draw(ballSprite);
 }
 
@@ -33,29 +30,25 @@ void Ball::increaseSpeed(float ds) {
 }
 
 void Ball::bounceHorizontally() {
-	vectorOfMovement.x *= -1.f;
+	vectorOfMovement.x *= -1.F;
 }
 
 void Ball::bounceVertically() {
-	vectorOfMovement.y *= -1.f;
+	vectorOfMovement.y *= -1.F;
 }
 
 void Ball::reset() {
-	Point startPosition{ 502.f, 374.f };
-	speed = 150.f;
+	Point startPosition{ 502.F, 374.F };
+	speed = 300.F;
 
-	sprite.setPosition(startPosition);
+	setPosition(startPosition);
 
 	srand(time(NULL));
 
-	vectorOfMovement.x = (rand() % 100 < 50) ? 1.f : -1.f;
-	vectorOfMovement.y = (rand() % 100 < 50) ? 1.f : -1.f;
+	vectorOfMovement.x = (rand() % 100 < 50) ? 1.F : -1.F;
+	vectorOfMovement.y = (rand() % 100 < 50) ? 1.F : -1.F;
 }
 
 Point Ball::getVectorOfMovement() {
 	return vectorOfMovement;
-}
-
-Sprite& Ball::getSprite() {
-	return sprite;
 }

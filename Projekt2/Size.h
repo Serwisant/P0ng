@@ -3,7 +3,7 @@
 
 struct Size {
 	float width;
-	float heigth;
+	float height;
 };
 
 #endif

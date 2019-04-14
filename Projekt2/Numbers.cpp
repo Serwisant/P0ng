@@ -1,8 +1,7 @@
 #include "numbers.h"
 
-Numbers::Numbers(Point position, sf::RenderWindow* window) {
-	this->position = position;
-	appWindow = window;
+Numbers::Numbers(Point position, sf::RenderWindow* window) : position(position), appWindow(window) {
+	
 }
 
 void Numbers::drawNumber(int number) {
@@ -122,50 +121,50 @@ void Numbers::draw9() {
 }
 
 void Numbers::drawTop() {
-	sf::RectangleShape top(sf::Vector2f(50.f, 10.f));
+	sf::RectangleShape top(sf::Vector2f(50.F, 10.F));
 	top.setPosition(position.x, position.y);
 
 	appWindow->draw(top);
 }
 
 void Numbers::drawBottom() {
-	sf::RectangleShape bottom(sf::Vector2f(50.f, 10.f));
-	bottom.setPosition(position.x, position.y + 90.f);
+	sf::RectangleShape bottom(sf::Vector2f(50.F, 10.F));
+	bottom.setPosition(position.x, position.y + 90.F);
 
 	appWindow->draw(bottom);
 }
 
 void Numbers::drawRightTop() {
-	sf::RectangleShape rightTop(sf::Vector2f(10.f, 50.f));
-	rightTop.setPosition(position.x + 40.f, position.y);
+	sf::RectangleShape rightTop(sf::Vector2f(10.F, 50.F));
+	rightTop.setPosition(position.x + 40.F, position.y);
 
 	appWindow->draw(rightTop);
 }
 
 void Numbers::drawRightBottom() {
-	sf::RectangleShape rightBottom(sf::Vector2f(10.f, 50.f));
-	rightBottom.setPosition(position.x + 40.f, position.y + 50.f);
+	sf::RectangleShape rightBottom(sf::Vector2f(10.F, 50.F));
+	rightBottom.setPosition(position.x + 40.F, position.y + 50.F);
 
 	appWindow->draw(rightBottom);
 }
 
 void Numbers::drawLeftTop() {
-	sf::RectangleShape leftTop(sf::Vector2f(10.f, 50.f));
+	sf::RectangleShape leftTop(sf::Vector2f(10.F, 50.F));
 	leftTop.setPosition(position.x, position.y);
 
 	appWindow->draw(leftTop);
 }
 
 void Numbers::drawLeftBottom() {
-	sf::RectangleShape leftBottom(sf::Vector2f(10.f, 50.f));
-	leftBottom.setPosition(position.x, position.y + 50.f);
+	sf::RectangleShape leftBottom(sf::Vector2f(10.F, 50.F));
+	leftBottom.setPosition(position.x, position.y + 50.F);
 
 	appWindow->draw(leftBottom);
 }
 
 void Numbers::drawMiddle() {
-	sf::RectangleShape middle(sf::Vector2f(50.f, 10.f));
-	middle.setPosition(position.x, position.y + 40.f);
+	sf::RectangleShape middle(sf::Vector2f(50.F, 10.F));
+	middle.setPosition(position.x, position.y + 40.F);
 
 	appWindow->draw(middle);
 }

@@ -3,10 +3,10 @@
 Pallet::Pallet(float x, sf::RenderWindow* window) : appWindow(window) {
 	Point startPosition{ x, 334.F };
 	Size sizeOfPallet{ 20.F, 100.F };
-	sf::Vector2f graphicalSpriteSize(sizeOfPallet.width, sizeOfPallet.heigth);
+	sf::Vector2f graphicalSpriteSize(sizeOfPallet.width, sizeOfPallet.height);
 
-	sprite.setPosition(startPosition);
-	sprite.setSize(sizeOfPallet);
+	setPosition(startPosition);
+	setSize(sizeOfPallet);
 
 	dy = 0.F;
 
@@ -14,23 +14,23 @@ Pallet::Pallet(float x, sf::RenderWindow* window) : appWindow(window) {
 	palletSprite.setFillColor(sf::Color::White);
 }
 
-void Pallet::move(float dy) {
+void Pallet::movePallet(float dy) {
 	this->dy = dy;
 }
 
 void Pallet::moveUp(float dy) {
-	if (sprite.getPosition().y + dy >= 0.F)
-		sprite.move(0.f, dy);
+	if (getY() + dy >= 0.F)
+		Sprite::move(0, dy);
 	else {
-		sprite.setY(0.f);
+		setY(0.F);
 	}
 }
 
 void Pallet::moveDown(float dy) {
-	if (sprite.getBottom() + dy <= 768.F)
-		sprite.move(0.F, dy);
+	if (getBottom() + dy <= 768.F)
+		Sprite::move(0, dy);
 	else {
-		sprite.setY(768.F - sprite.getSize().heigth);
+		setY(768.F - getHeight());
 	}
 }
 
@@ -46,12 +46,8 @@ void Pallet::update(float dt) {
 }
 
 void Pallet::draw() {
-	sf::Vector2f currentPosition(sprite.getPosition().x, sprite.getPosition().y);
+	sf::Vector2f currentPosition(getX(), getY());
 
 	palletSprite.setPosition(currentPosition);
 	appWindow->draw(palletSprite);
-}
-
-Sprite Pallet::getSprite() {
-	return sprite;
 }

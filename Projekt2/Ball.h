@@ -6,7 +6,7 @@
 #include "Point.h"
 #include "Sprite.h"
 
-class Ball {
+class Ball : public Sprite {
 public:
 	Ball(sf::RenderWindow* window);
 	void update(float dt);
@@ -18,14 +18,10 @@ public:
 	void reset();
 
 	Point getVectorOfMovement();
-	Sprite& getSprite();
-	float getX();
-	float getY();
 
 private:
 	float speed;
 	Point vectorOfMovement;
-	Sprite sprite;
 	sf::RectangleShape ballSprite;
 
 	sf::RenderWindow* appWindow;

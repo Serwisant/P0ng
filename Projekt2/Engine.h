@@ -34,8 +34,29 @@ private:
 	int leftScoreNum;
 	int rightScoreNum;
 
+	void initializeBall();
+	void initializePallets();
+	void initializeScore();
+	void initializeCollisionChecker();
+	void initializeSoundPlayer();
+	void initializeAnalogSettings();
+
+	float analogSensivity;
+	float deadzone;
+
 	void movePallets();
+	void moveLeftPallet();
+	void moveRightPallet();
+	
 	void checkBallCollision();
+	void checkBallCollisionWithUpperAndLowerBoundary();
+	void checkBallOutsideLeftSide();
+	void checkBallOutsideRightSide();
+	void checkBallWithLeftPalletCollision();
+	void checkBallWithRightPalletCollision();
+
+	void resetBall();
+	void bounceFromPallet();
 };
 
 #endif ENGINE_H
