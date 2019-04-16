@@ -2,6 +2,14 @@
 #include "Ball.h"
 #include "Pallet.h"
 
+CollisionChecker::CollisionChecker() : deltaTime(0.F) {
+
+}
+
+void CollisionChecker::setDeltaTime(float dt) {
+	deltaTime = dt;
+}
+
 bool CollisionChecker::isBallInCollisionWithPallet(Ball* ball, Pallet* pallet) {
 	float ballX = ball->getX();
 	float ballY = ball->getY();
@@ -13,10 +21,10 @@ bool CollisionChecker::isBallInCollisionWithPallet(Ball* ball, Pallet* pallet) {
 	float palletRightSide = pallet->getRightSide();
 	float palletBottom = pallet->getBottom();
 
-	float predictedLeftSideOfBall = ballX + ball->getVectorOfMovement().x;
-	float predictedRightSideOfBall = ballRightSide + ball->getVectorOfMovement().x;
-	float predictedTopOfBall = ballY + ball->getVectorOfMovement().y;
-	float predictedBottomOfBall = ballBottom + ball->getVectorOfMovement().y;
+	float predictedLeftSideOfBall = ballX + (ball->getVectorOfMovement().x * deltaTime);
+	float predictedRightSideOfBall = ballRightSide + (ball->getVectorOfMovement().x * deltaTime);
+	float predictedTopOfBall = ballY + (ball->getVectorOfMovement().y * deltaTime);
+	float predictedBottomOfBall = ballBottom + (ball->getVectorOfMovement().y * deltaTime);
 
 	if (predictedRightSideOfBall > palletX && predictedLeftSideOfBall < palletRightSide &&
 		predictedBottomOfBall > palletY && predictedTopOfBall < palletBottom)
@@ -27,17 +35,16 @@ bool CollisionChecker::isBallInCollisionWithPallet(Ball* ball, Pallet* pallet) {
 
 bool CollisionChecker::isBallInCollisionWithUpperBound(Ball* ball) {
 	float ballY = ball->getY();
-	float ballVector = ball->getVectorOfMovement().y;
+	float ballVector = ball->getVectorOfMovement().y * deltaTime;
 	float predictedYPosition = ballY + ballVector;
 
 	return predictedYPosition <= 0;
 }
 
 bool CollisionChecker::isBallInCollisionWithLowerBound(Ball* ball) {
-	float ballY = ball->getY();
-	float ballHeigth = ball->getHeight();
-	float ballVector = ball->getVectorOfMovement().y;
-	float predictedYPosition = ballY + ballHeigth + ballVector;
+	float ballBottom = ball->getBottom();
+	float ballVector = ball->getVectorOfMovement().y * deltaTime;
+	float predictedYPosition = ballBottom + ballVector;
 
 	return predictedYPosition >= 768.F;
 }

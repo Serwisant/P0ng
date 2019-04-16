@@ -1,9 +1,10 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <SFML\Graphics.hpp>
-#include <SFML\System.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 
+class TitleScreen;
 class Ball;
 class Pallet;
 class Numbers;
@@ -12,13 +13,20 @@ class SoundPlayer;
 
 class Engine {
 public:
-	Engine(sf::RenderWindow* window);
+	explicit Engine(sf::RenderWindow* window);
 	~Engine();
 
+	void startGame();
 	void updateLoop(float dt);
 	void draw();
 
 private:
+	enum MODE {TITLE_SCREEN, PLAY};
+
+	MODE currentMode;
+
+	TitleScreen* titleScreen;
+
 	Ball* ball;
 	Pallet* leftPallet;
 	Pallet* rightPallet;
@@ -34,6 +42,10 @@ private:
 	int leftScoreNum;
 	int rightScoreNum;
 
+	void resetGame();
+
+	void initializeTitleScreen();
+	void initializeMode();
 	void initializeBall();
 	void initializePallets();
 	void initializeScore();
@@ -44,9 +56,8 @@ private:
 	float analogSensivity;
 	float deadzone;
 
-	void movePallets();
-	void moveLeftPallet();
-	void moveRightPallet();
+	void moveLeftPallet(float dt);
+	void moveRightPallet(float dt);
 	
 	void checkBallCollision();
 	void checkBallCollisionWithUpperAndLowerBoundary();
@@ -54,6 +65,11 @@ private:
 	void checkBallOutsideRightSide();
 	void checkBallWithLeftPalletCollision();
 	void checkBallWithRightPalletCollision();
+
+	void addScoreToLeftPlayer();
+	void addScoreToRightPlayer();
+
+	void checkWinner();
 
 	void resetBall();
 	void bounceFromPallet();

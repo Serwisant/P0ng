@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "TitleScreen.h"
 #include "Ball.h"
 #include "Pallet.h"
 #include "Size.h"
@@ -9,12 +10,22 @@
 #include <SFML/System.hpp>
 
 Engine::Engine(sf::RenderWindow* window) : appWindow(window) {
+	initializeTitleScreen();
+	initializeMode();
 	initializeBall();
 	initializePallets();
 	initializeScore();
 	initializeCollisionChecker();
 	initializeSoundPlayer();
 	initializeAnalogSettings();
+}
+
+void Engine::initializeTitleScreen() {
+	titleScreen = new TitleScreen(appWindow);
+}
+
+void Engine::initializeMode() {
+	currentMode = MODE::TITLE_SCREEN;
 }
 
 void Engine::initializeBall(){
@@ -48,6 +59,8 @@ void Engine::initializeAnalogSettings() {
 }
 
 Engine::~Engine() {
+	delete titleScreen;
+
 	delete ball;
 
 	delete leftPallet;
@@ -61,43 +74,69 @@ Engine::~Engine() {
 	delete soundPlayer;
 }
 
-void Engine::updateLoop(float dt) {
-	moveLeftPallet();
-	moveRightPallet();
-	checkBallCollision();
+void Engine::startGame() {
+	currentMode = MODE::PLAY;
+	resetGame();
+}
 
-	leftPallet->update(dt);
-	rightPallet->update(dt);
-	ball->update(dt);
+void Engine::resetGame() {
+	leftScoreNum = 0;
+	rightScoreNum = 0;
+
+	delete leftPallet;
+	delete rightPallet;
+
+	initializePallets();
+}
+
+void Engine::updateLoop(float dt) {
+	if (currentMode == MODE::TITLE_SCREEN) {
+		titleScreen->update(dt);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			startGame();
+	}
+	else {
+		collisionChecker->setDeltaTime(dt);
+
+		moveLeftPallet(dt);
+		moveRightPallet(dt);
+		checkBallCollision();
+
+		leftPallet->update(dt);
+		rightPallet->update(dt);
+		ball->update(dt);
+
+		checkWinner();
+	}
 }
 
 void Engine::draw() {
-	ball->draw();
-	leftPallet->draw();
-	rightPallet->draw();
-	leftScore->drawNumber(leftScoreNum);
-	rightScore->drawNumber(rightScoreNum);
+	if (currentMode == MODE::TITLE_SCREEN) {
+		titleScreen->draw();	
+	}
+	else {
+		ball->draw();
+		leftPallet->draw();
+		rightPallet->draw();
+		leftScore->drawNumber(leftScoreNum);
+		rightScore->drawNumber(rightScoreNum);
+	}
 }
 
 
-void Engine::movePallets() {
-	moveLeftPallet();
-	moveRightPallet();
-}
-
-void Engine::moveLeftPallet() {
+void Engine::moveLeftPallet(float dt) {
 	float leftAnalogY = sf::Joystick::getAxisPosition(0, sf::Joystick::Y) * analogSensivity;
 
 	if (abs(leftAnalogY) > deadzone)
 		leftPallet->movePallet(leftAnalogY);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		leftPallet->movePallet(-1500.F);
+		leftPallet->movePallet(-1500.F );
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 		leftPallet->movePallet(1500.F);
 }
 
-void Engine::moveRightPallet() {
+void Engine::moveRightPallet(float dt) {
 	float rightAnalogY = sf::Joystick::getAxisPosition(0, sf::Joystick::R) * analogSensivity;
 
 	if (abs(rightAnalogY) > deadzone)
@@ -127,16 +166,24 @@ void Engine::checkBallCollisionWithUpperAndLowerBoundary() {
 
 void Engine::checkBallOutsideLeftSide() {
 	if (collisionChecker->isBallOutsideLeft(ball)) {
-		rightScoreNum++;
+		addScoreToRightPlayer();
 		resetBall();
 	}
 }
 
 void Engine::checkBallOutsideRightSide() {
 	if (collisionChecker->isBallOutsideRight(ball)) {
-		leftScoreNum++;
+		addScoreToLeftPlayer();
 		resetBall();
 	}
+}
+
+void Engine::addScoreToLeftPlayer() {
+	leftScoreNum++;
+}
+
+void Engine::addScoreToRightPlayer() {
+	rightScoreNum++;
 }
 
 void Engine::resetBall() {
@@ -173,5 +220,16 @@ void Engine::checkBallWithRightPalletCollision(){
 
 void Engine::bounceFromPallet() {
 	ball->bounceHorizontally();
-	ball->increaseSpeed(30.F);
+	ball->increaseSpeed(75.F);
+}
+
+void Engine::checkWinner() {
+	if (leftScoreNum >= 10) {
+		titleScreen->setWinner(TitleScreen::WINNER::LEFT_PALLET);
+		currentMode = MODE::TITLE_SCREEN;
+	}
+	if (rightScoreNum >= 10) {
+		titleScreen->setWinner(TitleScreen::WINNER::RIGHT_PALLET);
+		currentMode = MODE::TITLE_SCREEN;
+	}
 }

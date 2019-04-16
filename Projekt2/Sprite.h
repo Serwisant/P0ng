@@ -7,7 +7,7 @@
 class Sprite {
 public:
 	Sprite();
-	Sprite(Size size);
+	explicit Sprite(Size size);
 	Sprite(Point position, Size size);
 
 	void setPosition(Point point);

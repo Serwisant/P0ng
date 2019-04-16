@@ -4,6 +4,7 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1024, 768), "P0ng");
+	window.setMouseCursorVisible(false);
 	sf::Clock timer;
 
 	Engine* engine = new Engine(&window);

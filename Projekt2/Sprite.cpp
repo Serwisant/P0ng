@@ -2,13 +2,11 @@
 
 Sprite::Sprite() {
 	setPosition(Point{ 0.F, 0.F });
-
-	size.width = 0;
-	size.height = 0;
+	setSize(Size{ 0.F, 0.F });
 }
 
 Sprite::Sprite(Size size) : size(size) {
-	
+	setPosition(Point{ 0.F, 0.F });
 }
 
 Sprite::Sprite(Point position, Size size) : position(position), size(size) {

@@ -11,8 +11,8 @@ Ball::Ball(sf::RenderWindow* window) : appWindow(window) {
 }
 
 void Ball::update(float dt) {
-	float xMovement = vectorOfMovement.x * speed * dt;
-	float yMovement = vectorOfMovement.y * speed * dt;
+	float xMovement = vectorOfMovement.x * dt;
+	float yMovement = vectorOfMovement.y * dt;
 	move(xMovement, yMovement);
 }
 
@@ -26,7 +26,15 @@ void Ball::draw() {
 }
 
 void Ball::increaseSpeed(float ds) {
-	speed += ds;
+	if (vectorOfMovement.x > 0)
+		vectorOfMovement.x += ds;
+	else if (vectorOfMovement.x < 0)
+		vectorOfMovement.x -= ds;
+
+	if (vectorOfMovement.y > 0)
+		vectorOfMovement.y += ds;
+	else if(vectorOfMovement.y < 0)
+		vectorOfMovement.y -= ds;
 }
 
 void Ball::bounceHorizontally() {
@@ -39,16 +47,20 @@ void Ball::bounceVertically() {
 
 void Ball::reset() {
 	Point startPosition{ 502.F, 374.F };
-	speed = 300.F;
+	const float INITIALSPEED = 300.F;
 
 	setPosition(startPosition);
 
 	srand(time(NULL));
 
-	vectorOfMovement.x = (rand() % 100 < 50) ? 1.F : -1.F;
-	vectorOfMovement.y = (rand() % 100 < 50) ? 1.F : -1.F;
+	vectorOfMovement.x = (rand() % 100 < 50) ? INITIALSPEED : -INITIALSPEED;
+	vectorOfMovement.y = (rand() % 100 < 50) ? INITIALSPEED : -INITIALSPEED;
 }
 
 Point Ball::getVectorOfMovement() {
 	return vectorOfMovement;
+}
+
+float Ball::getSpeed() {
+	return speed;
 }
