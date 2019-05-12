@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 class TitleScreen;
-class Ball;
+class Ball;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 class Pallet;
 class Numbers;
 class CollisionChecker;

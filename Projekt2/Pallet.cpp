@@ -1,7 +1,16 @@
 #include "Pallet.h"
 
+Pallet::Pallet() {
+	startPosition = Point{ 0.F, 334.F };
+	reset();
+}
+
 Pallet::Pallet(float x, sf::RenderWindow* window) : appWindow(window) {
-	Point startPosition{ x, 334.F };
+	startPosition = Point{ x, 334.F };
+	reset();
+}
+
+void Pallet::reset() {
 	Size sizeOfPallet{ 20.F, 100.F };
 	sf::Vector2f graphicalSpriteSize(sizeOfPallet.width, sizeOfPallet.height);
 

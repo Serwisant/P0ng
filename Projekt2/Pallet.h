@@ -8,6 +8,8 @@
 
 class Pallet : public Sprite {
 public:
+	Pallet();
+	explicit Pallet(float x);
 	Pallet(float x, sf::RenderWindow* window);
 	void movePallet(float dy);
 	void update(float dt);
@@ -21,6 +23,9 @@ private:
 
 	void moveUp(float dy);
 	void moveDown(float dy);
+
+	void reset();
+	Point startPosition;
 };
 
 #endif

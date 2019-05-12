@@ -1,4 +1,10 @@
+#include <random>
 #include "Ball.h"
+
+Ball::Ball() {
+	appWindow = nullptr;
+	reset();
+}
 
 Ball::Ball(sf::RenderWindow* window) : appWindow(window) {
 	Size sizeOfBall{ 20.F, 20.F };
@@ -21,6 +27,8 @@ void Ball::move(float dx, float dy) {
 }
 
 void Ball::draw() {
+	if (appWindow == nullptr)
+		return;
 	ballSprite.setPosition(getX(), getY());
 	appWindow->draw(ballSprite);
 }
@@ -51,10 +59,30 @@ void Ball::reset() {
 
 	setPosition(startPosition);
 
-	srand(time(NULL));
+	std::default_random_engine dre;
+	std::uniform_int_distribution<int> distribution(0, 3);
 
-	vectorOfMovement.x = (rand() % 100 < 50) ? INITIALSPEED : -INITIALSPEED;
-	vectorOfMovement.y = (rand() % 100 < 50) ? INITIALSPEED : -INITIALSPEED;
+	switch (distribution(dre))
+	{
+	case 0:
+		vectorOfMovement.x = -INITIALSPEED;
+		vectorOfMovement.y = -INITIALSPEED;
+		break;
+	case 1:
+		vectorOfMovement.x = INITIALSPEED;
+		vectorOfMovement.y = -INITIALSPEED;
+		break;
+	case 2:
+		vectorOfMovement.x = -INITIALSPEED;
+		vectorOfMovement.y = INITIALSPEED;
+		break;
+	case 3:
+		vectorOfMovement.x = INITIALSPEED;
+		vectorOfMovement.y = INITIALSPEED;
+		break;
+	default:
+		break;
+	}
 }
 
 Point Ball::getVectorOfMovement() {

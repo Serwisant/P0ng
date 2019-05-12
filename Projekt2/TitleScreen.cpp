@@ -133,7 +133,7 @@ void TitleScreen::drawG(float x, float y) {
 
 void TitleScreen::drawSpaceButton(float x, float y) {
 	sf::RectangleShape spaceBar;
-	float opacity = sin(phase * 2) * 127 + 127;
+	sf::Uint8 opacity = sin(phase * 2) * 127 + 127;
 
 	spaceBar.setSize(sf::Vector2f(300.F, 20.F));
 	spaceBar.setFillColor(sf::Color(255, 255, 255, opacity));

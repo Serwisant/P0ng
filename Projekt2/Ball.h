@@ -1,13 +1,14 @@
 #ifndef BALL_H
 #define BALL_H
 
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "Size.h"
 #include "Point.h"
 #include "Sprite.h"
 
 class Ball : public Sprite {
 public:
+	Ball();
 	explicit Ball(sf::RenderWindow* window);
 	void update(float dt);
 	void move(float dx, float dy);
